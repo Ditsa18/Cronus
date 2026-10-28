@@ -15,8 +15,8 @@ def test_serve_index(client):
     """Verify that the frontend HTML index is served successfully."""
     response = client.get("/")
     assert response.status_code == 200
-    assert "Cronus Bank" in response.text
-    assert "Fraud Screening Ops" in response.text
+    assert "Cronus Fraud Analytics" in response.text
+    assert "Cronus Logo" in response.text
 
 
 def test_get_kpis(client):

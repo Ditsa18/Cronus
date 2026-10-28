@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # Rule-Based Bank Transaction Fraud Detection & Suspicious Activity Analytics
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org/)

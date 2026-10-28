@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # Known Issues, Limitations & Future Work
 
 ## 1. Known Architectural Limitations

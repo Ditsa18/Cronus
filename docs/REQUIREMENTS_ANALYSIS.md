@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # Requirements Analysis & Specifications Matrix
 
 ## 1. Overview & Business Goal

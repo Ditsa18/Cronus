@@ -43,9 +43,11 @@
 
   <!-- Mobile Header -->
   <div class="md:hidden flex items-center justify-between p-4 bg-slate-900 border-b border-slate-800">
-    <div class="flex items-center space-x-2">
-      <i data-lucide="shield-alert" class="w-6 h-6 text-indigo-400"></i>
-      <span class="font-bold text-lg tracking-tight">FraudGuard AI</span>
+    <div class="flex items-center space-x-2.5">
+      <div class="bg-white rounded px-2 py-1">
+        <img src="/static/logo.jpg" alt="Cronus Logo" class="h-7 w-auto object-contain">
+      </div>
+      <span class="font-bold text-sm tracking-tight text-white">Fraud Analytics</span>
     </div>
     <button id="mobileMenuBtn" class="p-2 text-slate-400 hover:text-white focus:outline-none">
       <i data-lucide="menu" class="w-6 h-6"></i>
@@ -54,13 +56,13 @@
 
   <!-- Sidebar Navigation -->
   <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-slate-900/90 border-r border-slate-800 shrink-0 select-none">
-    <div class="p-5 border-b border-slate-800/80 flex items-center space-x-3">
-      <div class="p-2 bg-indigo-600/20 rounded-lg border border-indigo-500/30">
-        <i data-lucide="shield-check" class="w-6 h-6 text-indigo-400"></i>
+    <div class="p-4 border-b border-slate-800/80 flex flex-col space-y-2">
+      <div class="bg-white rounded-lg p-2.5 flex items-center justify-center shadow-sm">
+        <img src="/static/logo.jpg" alt="Cronus Logo" class="h-11 w-auto object-contain">
       </div>
       <div>
-        <h1 class="font-bold text-base tracking-wide text-white">Cronus Bank</h1>
-        <p class="text-xs text-slate-400">Fraud Screening Ops</p>
+        <h1 class="font-bold text-sm tracking-wide text-white mt-1">Cronus Fraud Analytics</h1>
+        <p class="text-[11px] text-slate-400">Rule-Based Screening Engine</p>
       </div>
     </div>
 

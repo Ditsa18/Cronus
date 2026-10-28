@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # Plain Language Project Explanation
 ## Explainable Rule-Based Fraud Detection System for Retail Banking
 

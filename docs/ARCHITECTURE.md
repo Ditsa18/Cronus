@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # System Architecture & Technical Design
 
 ## 1. System Architecture Overview

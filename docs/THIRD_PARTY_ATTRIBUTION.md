@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # Third-Party Attribution & Dependencies
 
 All software components in this project are either original clean-room implementations or rely on permissible open-source software libraries.

@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # Project Risk Register
 
 | Risk ID | Category | Risk Description | Likelihood | Impact | Severity | Mitigation Strategy | Status |

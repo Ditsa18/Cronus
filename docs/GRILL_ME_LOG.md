@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # Requirements Challenge Log (Grill Me)
 
 This document records the critical examination of the project requirements, identifying technical ambiguities, edge cases, risks, and justified decisions.

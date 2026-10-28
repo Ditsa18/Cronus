@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # Product Requirements Document (PRD)
 
 **Project**: Rule-Based Bank Transaction Fraud Detection & Suspicious Activity Analytics  

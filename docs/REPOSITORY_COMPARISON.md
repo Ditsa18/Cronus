@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # Architectural Pattern & Repository Comparison
 
 | Candidate Pattern | Requirement Coverage (25%) | Technical & Architectural Fit (20%) | Code Quality & Tests (15%) | Maintenance & Compatibility (10%) | License & Provenance (10%) | Security & Health (10%) | Integration Effort (10%) | Total (100%) | Decision |

@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # Executive Fraud Monitoring & Suspicious Activity Analytics Report
 
 **Prepared For**: Bank Fraud Monitoring Steering Committee & Risk Audit  

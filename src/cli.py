@@ -133,7 +133,11 @@ def _write_management_report(
     susp = score_summary["Suspicious Transactions"]
     susp_pct = score_summary["Suspicious %"]
 
-    content = f"""# Executive Fraud Monitoring & Suspicious Activity Analytics Report
+    content = f"""<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
+# Executive Fraud Monitoring & Suspicious Activity Analytics Report
 
 **Prepared For**: Bank Fraud Monitoring Steering Committee & Risk Audit  
 **Role**: Junior Data Analyst / Principal Autonomous Fraud Systems Engineer  

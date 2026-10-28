@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+</p>
+
 # Requirements Traceability Matrix (RTM)
 
 This matrix maps every section of the user requirements document to its design, implementation module, test suite, and verification status.
