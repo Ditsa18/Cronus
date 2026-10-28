@@ -184,23 +184,30 @@ bank-fraud-detection/
 
 3. **Install Dependencies**:
    ```powershell
-   uv pip install pandas numpy matplotlib scikit-learn scipy tabulate pytest pytest-cov
+   uv pip install pandas numpy matplotlib scikit-learn scipy tabulate fastapi uvicorn python-multipart httpx pytest pytest-cov
    ```
 
-4. **Execute Full Test Suite with Coverage**:
+4. **Launch the Responsive Web Dashboard**:
+   ```powershell
+   .venv\Scripts\python.exe run_web.py
+   ```
+   Open your browser at **`http://127.0.0.1:8000`** to access:
+   * **Live KPI cards & real-time Chart.js interactive visualizations**
+   * **Priority manual review queue** with instant search, score filtering, and transaction inspection modals
+   * **Customer repeat offender risk ranking**
+   * **Interactive Rule Studio**: sliders to dynamically adjust amount thresholds, burst counts, and alert cutoffs
+   * **Synthetic transaction generator & custom CSV file uploader**
+   * **Full answers to the 10 core banking questions**
+
+5. **Execute Full Test Suite with Coverage**:
    ```powershell
    .venv\Scripts\pytest --cov=src --cov-report=term-missing -v
    ```
-   *(Expected: 29 passed, 97% code coverage)*
+   *(Expected: 38 passed, 94% code coverage)*
 
-5. **Run the Complete Fraud Detection Pipeline**:
+6. **Run the CLI Pipeline (Batch / Headless Mode)**:
    ```powershell
    .venv\Scripts\python.exe -m src.cli --input data/bank_transactions.csv --reports-dir reports
-   ```
-
-6. **Generate a Fresh Synthetic Dataset of Any Size**:
-   ```powershell
-   .venv\Scripts\python.exe -m src.cli --generate 20000 --output-csv data/bank_transactions_custom.csv
    ```
 
 ---

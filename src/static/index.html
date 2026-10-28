@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Fraud Analytics & Screening System</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            bank: {
+              50: '#f0fdf4',
+              500: '#10b981',
+              600: '#059669',
+              900: '#064e3b',
+            },
+            alert: {
+              500: '#ef4444',
+              600: '#dc2626',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col md:flex-row antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Mobile Header -->
+  <div class="md:hidden flex items-center justify-between p-4 bg-slate-900 border-b border-slate-800">
+    <div class="flex items-center space-x-2">
+      <i data-lucide="shield-alert" class="w-6 h-6 text-indigo-400"></i>
+      <span class="font-bold text-lg tracking-tight">FraudGuard AI</span>
+    </div>
+    <button id="mobileMenuBtn" class="p-2 text-slate-400 hover:text-white focus:outline-none">
+      <i data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+  </div>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-slate-900/90 border-r border-slate-800 shrink-0 select-none">
+    <div class="p-5 border-b border-slate-800/80 flex items-center space-x-3">
+      <div class="p-2 bg-indigo-600/20 rounded-lg border border-indigo-500/30">
+        <i data-lucide="shield-check" class="w-6 h-6 text-indigo-400"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-base tracking-wide text-white">Cronus Bank</h1>
+        <p class="text-xs text-slate-400">Fraud Screening Ops</p>
+      </div>
+    </div>
+
+    <!-- Nav Items -->
+    <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto">
+      <button onclick="switchTab('overview')" id="tab-btn-overview" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors bg-indigo-600 text-white shadow-lg shadow-indigo-600/20">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+        <span>Overview & KPIs</span>
+      </button>
+      <button onclick="switchTab('queue')" id="tab-btn-queue" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:bg-slate-800 hover:text-white">
+        <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>
+        <span>Review Queue</span>
+        <span id="nav-susp-badge" class="ml-auto text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 font-semibold border border-red-500/30">0</span>
+      </button>
+      <button onclick="switchTab('accounts')" id="tab-btn-accounts" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:bg-slate-800 hover:text-white">
+        <i data-lucide="users" class="w-4 h-4 text-emerald-400"></i>
+        <span>Account Profiles</span>
+      </button>
+      <button onclick="switchTab('simulation')" id="tab-btn-simulation" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:bg-slate-800 hover:text-white">
+        <i data-lucide="sliders" class="w-4 h-4 text-sky-400"></i>
+        <span>Rule Studio</span>
+      </button>
+      <button onclick="switchTab('data')" id="tab-btn-data" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:bg-slate-800 hover:text-white">
+        <i data-lucide="database" class="w-4 h-4 text-purple-400"></i>
+        <span>Data & Upload</span>
+      </button>
+      <button onclick="switchTab('report')" id="tab-btn-report" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:bg-slate-800 hover:text-white">
+        <i data-lucide="file-text" class="w-4 h-4 text-blue-400"></i>
+        <span>Business Q&A</span>
+      </button>
+    </nav>
+
+    <!-- Bottom Status -->
+    <div class="p-4 border-t border-slate-800 text-xs text-slate-400 space-y-1">
+      <div class="flex items-center justify-between">
+        <span class="flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Engine Online</span>
+        </span>
+        <span class="text-slate-500 font-mono">v1.0.0</span>
+      </div>
+      <p class="text-[11px] text-slate-500">Explainable Screening</p>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+    <!-- Top Header Bar -->
+    <header class="p-5 border-b border-slate-800 bg-slate-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h2 id="view-title" class="text-xl font-bold text-white tracking-tight">Executive Dashboard</h2>
+        <p id="view-subtitle" class="text-xs text-slate-400">Explainable Rule-Based Banking Fraud Screening</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="quickRefresh()" class="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          <span>Refresh</span>
+        </button>
+        <button onclick="exportCSV()" class="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-sm">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          <span>Export Queue</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- TAB 1: OVERVIEW -->
+    <section id="tab-overview" class="p-5 md:p-8 space-y-6">
+      <!-- KPI Metric Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1 -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Screened Volume</span>
+            <div class="p-2 rounded-lg bg-blue-500/10 text-blue-400"><i data-lucide="activity" class="w-4 h-4"></i></div>
+          </div>
+          <div class="mt-3">
+            <h3 id="kpi-total-txns" class="text-2xl font-bold text-white">0</h3>
+            <p class="text-xs text-slate-400 mt-1">Total transactions evaluated</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Flagged Suspicious</span>
+            <div class="p-2 rounded-lg bg-red-500/10 text-red-400"><i data-lucide="alert-octagon" class="w-4 h-4"></i></div>
+          </div>
+          <div class="mt-3 flex items-baseline space-x-2">
+            <h3 id="kpi-susp-count" class="text-2xl font-bold text-red-400">0</h3>
+            <span id="kpi-susp-rate" class="text-xs font-bold px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">0.0%</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Escalated to human review</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Monetary Turnover</span>
+            <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400"><i data-lucide="dollar-sign" class="w-4 h-4"></i></div>
+          </div>
+          <div class="mt-3">
+            <h3 id="kpi-total-vol" class="text-2xl font-bold text-white">$0</h3>
+            <p id="kpi-avg-amt" class="text-xs text-slate-400 mt-1">Avg: $0.00</p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">99th Percentile (P99)</span>
+            <div class="p-2 rounded-lg bg-purple-500/10 text-purple-400"><i data-lucide="trending-up" class="w-4 h-4"></i></div>
+          </div>
+          <div class="mt-3">
+            <h3 id="kpi-p99" class="text-2xl font-bold text-purple-300">$0</h3>
+            <p class="text-xs text-slate-400 mt-1">High amount alert threshold</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heuristic Rules Breakdown Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center space-x-4">
+          <div class="p-3 bg-amber-500/10 text-amber-400 rounded-lg"><i data-lucide="dollar-sign" class="w-5 h-5"></i></div>
+          <div>
+            <p class="text-xs text-slate-400">Rule 1: High Amount Alerts</p>
+            <h4 id="kpi-rule-amount" class="text-xl font-bold text-white mt-0.5">0</h4>
+          </div>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center space-x-4">
+          <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-lg"><i data-lucide="moon" class="w-5 h-5"></i></div>
+          <div>
+            <p class="text-xs text-slate-400">Rule 2: Late Night Alerts (23-05h)</p>
+            <h4 id="kpi-rule-night" class="text-xl font-bold text-white mt-0.5">0</h4>
+          </div>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center space-x-4">
+          <div class="p-3 bg-red-500/10 text-red-400 rounded-lg"><i data-lucide="zap" class="w-5 h-5"></i></div>
+          <div>
+            <p class="text-xs text-slate-400">Rule 3: High Frequency Bursts (>=5)</p>
+            <h4 id="kpi-rule-freq" class="text-xl font-bold text-white mt-0.5">0</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Chart 1: Hourly Risk -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="font-bold text-sm text-slate-200">Suspicious Transactions by Hour of Day</h4>
+            <span class="text-xs text-amber-400 font-medium">Night Window Highlighted</span>
+          </div>
+          <div class="h-64">
+            <canvas id="chartHourly"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Type Analysis -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="font-bold text-sm text-slate-200">Suspicious Rate (%) by Transaction Type</h4>
+            <span class="text-xs text-slate-400">Transfer vs Payment vs Withdrawal</span>
+          </div>
+          <div class="h-64">
+            <canvas id="chartType"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: Channel Analysis -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="font-bold text-sm text-slate-200">Vulnerability by Channel</h4>
+            <span class="text-xs text-slate-400">Online, Mobile App, ATM, Branch</span>
+          </div>
+          <div class="h-64">
+            <canvas id="chartChannel"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 4: Rule Combinations -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="font-bold text-sm text-slate-200">Rule Combination Bitmasks</h4>
+            <span class="text-xs text-slate-400">Multi-Rule Anomaly Patterns</span>
+          </div>
+          <div class="h-64">
+            <canvas id="chartCombination"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: REVIEW QUEUE -->
+    <section id="tab-queue" class="p-5 md:p-8 space-y-5 hidden">
+      <!-- Search & Filters -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-wrap items-center gap-3">
+        <div class="relative flex-1 min-w-[200px]">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+          <input type="text" id="queueSearch" placeholder="Search Transaction ID or Account ID..." oninput="filterQueue()" class="w-full bg-slate-800 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500">
+        </div>
+        <select id="queueScoreFilter" onchange="filterQueue()" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
+          <option value="">All Scores (>= 2)</option>
+          <option value="3">Score 3 Only (Critical)</option>
+          <option value="2">Score 2+ (High Priority)</option>
+        </select>
+        <select id="queueTypeFilter" onchange="filterQueue()" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
+          <option value="">All Types</option>
+          <option value="Transfer">Transfer</option>
+          <option value="Payment">Payment</option>
+          <option value="Withdrawal">Withdrawal</option>
+        </select>
+        <select id="queueChannelFilter" onchange="filterQueue()" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
+          <option value="">All Channels</option>
+          <option value="Online">Online</option>
+          <option value="Mobile App">Mobile App</option>
+          <option value="ATM">ATM</option>
+          <option value="Branch">Branch</option>
+        </select>
+        <button onclick="loadQueue()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium border border-slate-700">Reset</button>
+      </div>
+
+      <!-- Queue Table -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-800/80 text-slate-300 font-semibold border-b border-slate-700">
+              <tr>
+                <th class="p-3.5">Txn ID</th>
+                <th class="p-3.5">Account</th>
+                <th class="p-3.5">Date & Time</th>
+                <th class="p-3.5">Amount</th>
+                <th class="p-3.5">Type & Channel</th>
+                <th class="p-3.5">1H Count</th>
+                <th class="p-3.5">Suspicion Score</th>
+                <th class="p-3.5">Bitmask</th>
+                <th class="p-3.5 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="queueTableBody" class="divide-y divide-slate-800">
+              <tr><td colspan="9" class="p-6 text-center text-slate-500">Loading suspicious queue...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ACCOUNTS -->
+    <section id="tab-accounts" class="p-5 md:p-8 space-y-5 hidden">
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-bold text-white">Repeat High-Risk Accounts</h3>
+          <p class="text-xs text-slate-400">Customer accounts exhibiting multiple suspicious transactions</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs text-slate-400">Repeat Accounts:</span>
+          <span id="repeat-acc-count" class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">0</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-800/80 text-slate-300 font-semibold border-b border-slate-700">
+              <tr>
+                <th class="p-3.5">Account ID</th>
+                <th class="p-3.5">Total Transactions</th>
+                <th class="p-3.5">Total Transacted Value</th>
+                <th class="p-3.5">Avg Amount</th>
+                <th class="p-3.5">Suspicious Count</th>
+                <th class="p-3.5">Risk Rate (%)</th>
+                <th class="p-3.5">Investigation Status</th>
+              </tr>
+            </thead>
+            <tbody id="accountsTableBody" class="divide-y divide-slate-800">
+              <tr><td colspan="7" class="p-6 text-center text-slate-500">Loading account profiles...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: RULE STUDIO -->
+    <section id="tab-simulation" class="p-5 md:p-8 space-y-6 hidden">
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-6">
+        <div class="flex items-center space-x-3 mb-6">
+          <div class="p-2.5 bg-sky-500/10 text-sky-400 rounded-lg"><i data-lucide="sliders" class="w-5 h-5"></i></div>
+          <div>
+            <h3 class="text-lg font-bold text-white">Rule Parameter Studio & Dynamic Screening</h3>
+            <p class="text-xs text-slate-400">Adjust heuristic thresholds and simulate their effect on alert volumes</p>
+          </div>
+        </div>
+
+        <form id="studioForm" onsubmit="applyStudioParams(event)" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Parameter 1: Amount Method -->
+            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/60 space-y-3">
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Rule 1: High Amount Threshold</label>
+              <div class="flex items-center space-x-4 text-xs">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="radio" name="amount_method" value="p99" checked class="text-indigo-600 focus:ring-0">
+                  <span>99th Percentile (Robust, Recommended)</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="radio" name="amount_method" value="3sigma" class="text-indigo-600 focus:ring-0">
+                  <span>Mean + 3 StdDev</span>
+                </label>
+              </div>
+              <div class="pt-2">
+                <span class="text-[11px] text-slate-400">Custom Manual Threshold ($):</span>
+                <input type="number" id="customAmountInput" placeholder="Leave empty for auto-calculated" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+              </div>
+            </div>
+
+            <!-- Parameter 2: Frequency Burst -->
+            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/60 space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-slate-300 uppercase tracking-wider">Rule 3: High-Frequency Window</label>
+                <span id="freqValueLabel" class="text-xs font-bold text-indigo-400">5 txns / hour</span>
+              </div>
+              <input type="range" id="freqInput" min="2" max="15" value="5" oninput="document.getElementById('freqValueLabel').innerText = this.value + ' txns / hour'" class="w-full accent-indigo-500 cursor-pointer">
+              <p class="text-[11px] text-slate-400">Minimum transactions within a rolling 60-minute window for an account to trigger Rule 3.</p>
+            </div>
+
+            <!-- Parameter 3: Late Night Window -->
+            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/60 space-y-3">
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Rule 2: Late-Night Window</label>
+              <div class="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <span class="text-[11px] text-slate-400">Start Hour:</span>
+                  <select id="nightStartInput" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+                    <option value="22">22:00 (10 PM)</option>
+                    <option value="23" selected>23:00 (11 PM)</option>
+                    <option value="0">00:00 (Midnight)</option>
+                  </select>
+                </div>
+                <div>
+                  <span class="text-[11px] text-slate-400">End Hour:</span>
+                  <select id="nightEndInput" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+                    <option value="4">04:59 AM</option>
+                    <option value="5" selected>05:59 AM</option>
+                    <option value="6">06:59 AM</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Parameter 4: Suspicion Score Alert Cutoff -->
+            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/60 space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-slate-300 uppercase tracking-wider">Alert Threshold Cutoff</label>
+                <span id="scoreCutoffLabel" class="text-xs font-bold text-red-400">Score >= 2</span>
+              </div>
+              <input type="range" id="scoreCutoffInput" min="1" max="3" value="2" oninput="document.getElementById('scoreCutoffLabel').innerText = 'Score >= ' + this.value" class="w-full accent-red-500 cursor-pointer">
+              <p class="text-[11px] text-slate-400">Score 1: Minor anomaly. Score 2: Multiple co-occurring anomalies. Score 3: All 3 rules triggered.</p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-800">
+            <button type="button" onclick="resetStudioDefaults()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-medium border border-slate-700">Reset to Defaults</button>
+            <button type="submit" class="flex items-center space-x-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow-lg shadow-indigo-600/30 transition">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i>
+              <span>Re-Screen Entire Dataset</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 5: DATA INGESTION -->
+    <section id="tab-data" class="p-5 md:p-8 space-y-6 hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Generator Card -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-6 space-y-4">
+          <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-purple-500/10 text-purple-400 rounded-lg"><i data-lucide="sparkles" class="w-5 h-5"></i></div>
+            <div>
+              <h4 class="font-bold text-white text-sm">Generate Synthetic Transactions</h4>
+              <p class="text-xs text-slate-400">Privacy-compliant banking simulation conforming to Section 6 & 7</p>
+            </div>
+          </div>
+          <div class="space-y-3 pt-2">
+            <div>
+              <label class="text-xs text-slate-300 font-medium">Record Count:</label>
+              <select id="genCountSelect" class="mt-1 w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+                <option value="2000">2,000 Transactions (Quick Test)</option>
+                <option value="5000">5,000 Transactions</option>
+                <option value="10000" selected>10,000 Transactions (Standard Benchmark)</option>
+                <option value="20000">20,000 Transactions (Heavy Stress Test)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-slate-300 font-medium">Random Seed:</label>
+              <input type="number" id="genSeedInput" value="42" class="mt-1 w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white">
+            </div>
+            <button onclick="triggerDataGen()" class="w-full flex items-center justify-center space-x-2 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-semibold transition mt-2">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>Generate & Auto-Screen</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Upload Card -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-6 space-y-4">
+          <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="upload-cloud" class="w-5 h-5"></i></div>
+            <div>
+              <h4 class="font-bold text-white text-sm">Upload Custom Banking CSV</h4>
+              <p class="text-xs text-slate-400">Screen your own transaction batch</p>
+            </div>
+          </div>
+          <div class="border-2 border-dashed border-slate-700 rounded-xl p-6 text-center space-y-3">
+            <i data-lucide="file-up" class="w-8 h-8 mx-auto text-slate-500"></i>
+            <div>
+              <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleFileUpload(event)">
+              <button onclick="document.getElementById('csvFileInput').click()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium border border-slate-700">
+                Choose CSV File
+              </button>
+            </div>
+            <p class="text-[11px] text-slate-500">Expected columns: Transaction_ID, Account_ID, Amount, Transaction_Time</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: BUSINESS Q&A -->
+    <section id="tab-report" class="p-5 md:p-8 space-y-6 hidden">
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-6">
+        <h3 class="text-base font-bold text-white mb-1">Answers to Core Business Questions (Section 34)</h3>
+        <p class="text-xs text-slate-400 mb-6">Data-backed answers dynamically computed from the current transaction portfolio</p>
+        <div id="questionsContainer" class="space-y-4">
+          <p class="text-xs text-slate-500">Loading business answers...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- TRANSACTION DETAIL MODAL -->
+  <div id="txnModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div class="flex items-center space-x-2.5">
+          <div class="p-2 bg-red-500/10 text-red-400 rounded-lg"><i data-lucide="shield-alert" class="w-5 h-5"></i></div>
+          <div>
+            <h4 id="modalTxnId" class="text-base font-bold text-white">TX100000</h4>
+            <p id="modalAccId" class="text-xs text-slate-400">Account ACC1000</p>
+          </div>
+        </div>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <!-- Details grid -->
+        <div class="grid grid-cols-2 gap-3 bg-slate-800/50 p-3.5 rounded-xl border border-slate-800">
+          <div><span class="text-slate-400">Amount:</span> <strong id="modalAmount" class="text-white text-sm block">$0.00</strong></div>
+          <div><span class="text-slate-400">Time & Date:</span> <strong id="modalDateTime" class="text-white block">-</strong></div>
+          <div><span class="text-slate-400">Type & Channel:</span> <span id="modalTypeChannel" class="text-slate-200 block">-</span></div>
+          <div><span class="text-slate-400">Hourly Velocity:</span> <strong id="modalVelocity" class="text-amber-400 block">-</strong></div>
+        </div>
+
+        <!-- Explainability Box -->
+        <div class="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700 space-y-2">
+          <span class="font-bold text-indigo-300 uppercase tracking-wider text-[11px] block">Triggered Heuristics Explanation</span>
+          <ul id="modalRulesList" class="space-y-1.5 text-slate-300"></ul>
+        </div>
+
+        <!-- Triage Action Buttons -->
+        <div class="pt-2 flex items-center justify-end space-x-2.5 border-t border-slate-800">
+          <button onclick="alert('Transaction verified as customer authorized.'); closeModal()" class="px-3.5 py-2 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 rounded-lg font-medium border border-emerald-500/30">
+            Verify Normal
+          </button>
+          <button onclick="alert('Sent SMS/OTP prompt to customer registered device.'); closeModal()" class="px-3.5 py-2 bg-amber-600/20 text-amber-400 hover:bg-amber-600/30 rounded-lg font-medium border border-amber-500/30">
+            Trigger OTP
+          </button>
+          <button onclick="alert('Escalated to senior financial fraud investigation unit.'); closeModal()" class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg font-semibold shadow-lg shadow-red-600/30">
+            Escalate Case
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION SCRIPT -->
+  <script>
+    let charts = {};
+    let currentQueue = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      initMobileMenu();
+      loadDashboard();
+    });
+
+    function initMobileMenu() {
+      const btn = document.getElementById("mobileMenuBtn");
+      const sidebar = document.getElementById("sidebar");
+      btn.addEventListener("click", () => {
+        sidebar.classList.toggle("hidden");
+        sidebar.classList.toggle("flex");
+      });
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll("main > section").forEach(s => s.classList.add("hidden"));
+      document.getElementById(`tab-${tabId}`).classList.remove("hidden");
+
+      // Update button highlights
+      document.querySelectorAll(".nav-btn").forEach(b => {
+        b.className = "nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:bg-slate-800 hover:text-white";
+      });
+      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.className = "nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors bg-indigo-600 text-white shadow-lg shadow-indigo-600/20";
+      }
+
+      // Title & sub
+      const titles = {
+        overview: ["Executive Dashboard", "Explainable Rule-Based Banking Fraud Screening"],
+        queue: ["Priority Review Queue", "Investigator Human-in-the-Loop Triage"],
+        accounts: ["Account Risk Profiles", "Customer Repeat Anomaly Tracking"],
+        simulation: ["Rule Parameter Studio", "Dynamic Threshold Tuning & Simulation"],
+        data: ["Data Management & Generator", "Synthetic Generation & Custom File Ingestion"],
+        report: ["Business Findings & Methodology", "Answers to 10 Core Banking Questions"],
+      };
+      if (titles[tabId]) {
+        document.getElementById("view-title").innerText = titles[tabId][0];
+        document.getElementById("view-subtitle").innerText = titles[tabId][1];
+      }
+
+      // Load specific data when switching
+      if (tabId === "queue") loadQueue();
+      if (tabId === "accounts") loadAccounts();
+      if (tabId === "report") loadQuestions();
+      lucide.createIcons();
+    }
+
+    async function loadDashboard() {
+      try {
+        const [kpiRes, chartRes] = await Promise.all([
+          fetch("/api/kpis").then(r => r.json()),
+          fetch("/api/charts").then(r => r.json()),
+        ]);
+
+        // Populate KPIs
+        document.getElementById("kpi-total-txns").innerText = kpiRes.total_transactions.toLocaleString();
+        document.getElementById("kpi-susp-count").innerText = kpiRes.suspicious_transactions.toLocaleString();
+        document.getElementById("kpi-susp-rate").innerText = `${kpiRes.suspicious_percentage}%`;
+        document.getElementById("nav-susp-badge").innerText = kpiRes.suspicious_transactions.toLocaleString();
+        document.getElementById("kpi-total-vol").innerText = `$${kpiRes.total_monetary_volume.toLocaleString()}`;
+        document.getElementById("kpi-avg-amt").innerText = `Avg: $${kpiRes.average_transaction_amount.toLocaleString()}`;
+        document.getElementById("kpi-p99").innerText = `$${kpiRes.amount_p99.toLocaleString()}`;
+
+        // Rules breakdown
+        document.getElementById("kpi-rule-amount").innerText = kpiRes.rule_alerts.high_amount.toLocaleString();
+        document.getElementById("kpi-rule-night").innerText = kpiRes.rule_alerts.late_night.toLocaleString();
+        document.getElementById("kpi-rule-freq").innerText = kpiRes.rule_alerts.high_frequency.toLocaleString();
+
+        renderCharts(chartRes);
+        lucide.createIcons();
+      } catch (err) {
+        console.error("Dashboard load failed:", err);
+      }
+    }
+
+    function renderCharts(data) {
+      // Destroy previous charts if existing
+      Object.values(charts).forEach(c => c.destroy());
+
+      // 1. Hourly Chart
+      const ctxH = document.getElementById("chartHourly").getContext("2d");
+      charts.hourly = new Chart(ctxH, {
+        type: "bar",
+        data: {
+          labels: data.hourly.labels,
+          datasets: [{
+            label: "Suspicious Transactions",
+            data: data.hourly.suspicious,
+            backgroundColor: data.hourly.labels.map((_, i) => (i >= 23 || i <= 5) ? "#ef4444" : "#6366f1"),
+            borderRadius: 4,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: "#1e293b" }, ticks: { color: "#94a3b8", font: { size: 10 } } },
+            y: { grid: { color: "#1e293b" }, ticks: { color: "#94a3b8" } }
+          }
+        }
+      });
+
+      // 2. Type Chart
+      const ctxT = document.getElementById("chartType").getContext("2d");
+      charts.type = new Chart(ctxT, {
+        type: "bar",
+        data: {
+          labels: data.types.labels,
+          datasets: [{
+            label: "Suspicious Rate (%)",
+            data: data.types.rates,
+            backgroundColor: "#a855f7",
+            borderRadius: 4,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: "#1e293b" }, ticks: { color: "#94a3b8" } },
+            y: { grid: { color: "#1e293b" }, ticks: { color: "#94a3b8", callback: v => v + "%" } }
+          }
+        }
+      });
+
+      // 3. Channel Chart
+      const ctxC = document.getElementById("chartChannel").getContext("2d");
+      charts.channel = new Chart(ctxC, {
+        type: "bar",
+        data: {
+          labels: data.channels.labels,
+          datasets: [{
+            label: "Suspicious Rate (%)",
+            data: data.channels.rates,
+            backgroundColor: "#06b6d4",
+            borderRadius: 4,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: "#1e293b" }, ticks: { color: "#94a3b8" } },
+            y: { grid: { color: "#1e293b" }, ticks: { color: "#94a3b8", callback: v => v + "%" } }
+          }
+        }
+      });
+
+      // 4. Combination Chart
+      const ctxComb = document.getElementById("chartCombination").getContext("2d");
+      charts.comb = new Chart(ctxComb, {
+        type: "bar",
+        data: {
+          labels: data.combinations.labels,
+          datasets: [{
+            label: "Count",
+            data: data.combinations.counts,
+            backgroundColor: "#f59e0b",
+            borderRadius: 4,
+          }]
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: "#1e293b" }, ticks: { color: "#94a3b8" } },
+            y: { grid: { color: "#1e293b" }, ticks: { color: "#94a3b8", font: { size: 10 } } }
+          }
+        }
+      });
+    }
+
+    async function loadQueue() {
+      const score = document.getElementById("queueScoreFilter").value;
+      const type = document.getElementById("queueTypeFilter").value;
+      const ch = document.getElementById("queueChannelFilter").value;
+      const search = document.getElementById("queueSearch").value;
+
+      let url = `/api/transactions/suspicious?limit=100`;
+      if (score) url += `&score_filter=${score}`;
+      if (type) url += `&type_filter=${type}`;
+      if (ch) url += `&channel_filter=${ch}`;
+      if (search) url += `&search=${encodeURIComponent(search)}`;
+
+      try {
+        const res = await fetch(url).then(r => r.json());
+        currentQueue = res.records;
+        renderQueueTable(res.records);
+      } catch (e) {
+        console.error("Queue load failed:", e);
+      }
+    }
+
+    function renderQueueTable(records) {
+      const tbody = document.getElementById("queueTableBody");
+      if (!records || records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-500">No suspicious transactions match the criteria.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = records.map((r, i) => {
+        const scoreBadge = r.Suspicion_Score === 3
+          ? `<span class="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 font-bold border border-red-500/30">Score 3 (Critical)</span>`
+          : `<span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30">Score 2 (High)</span>`;
+
+        return `
+          <tr class="hover:bg-slate-800/50 transition">
+            <td class="p-3.5 font-mono text-indigo-300 font-medium">${r.Transaction_ID}</td>
+            <td class="p-3.5 font-mono text-slate-300">${r.Account_ID}</td>
+            <td class="p-3.5 text-slate-400">${r.Transaction_Date} ${r.Transaction_Time}</td>
+            <td class="p-3.5 font-bold text-white">$${Number(r.Amount).toLocaleString()}</td>
+            <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">${r.Transaction_Type} / ${r.Channel}</span></td>
+            <td class="p-3.5 font-mono font-semibold ${r.Txn_Count_1H >= 5 ? 'text-red-400' : 'text-slate-400'}">${r.Txn_Count_1H || 1} / 1h</td>
+            <td class="p-3.5">${scoreBadge}</td>
+            <td class="p-3.5 font-mono text-xs text-slate-400">${r.Rule_Combination}</td>
+            <td class="p-3.5 text-center">
+              <button onclick="inspectRow(${i})" class="px-2.5 py-1 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white rounded text-xs transition border border-indigo-500/30">
+                Inspect
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function filterQueue() {
+      loadQueue();
+    }
+
+    function inspectRow(idx) {
+      const r = currentQueue[idx];
+      if (!r) return;
+
+      document.getElementById("modalTxnId").innerText = r.Transaction_ID;
+      document.getElementById("modalAccId").innerText = `Account: ${r.Account_ID}`;
+      document.getElementById("modalAmount").innerText = `$${Number(r.Amount).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+      document.getElementById("modalDateTime").innerText = `${r.Transaction_Date} at ${r.Transaction_Time} (Hour ${r.Hour}:00)`;
+      document.getElementById("modalTypeChannel").innerText = `${r.Transaction_Type} via ${r.Channel}`;
+      document.getElementById("modalVelocity").innerText = `${r.Txn_Count_1H || 1} transactions in 1 hour`;
+
+      // Rules list
+      const rules = [];
+      if (r.Rule_High_Amount === 1) rules.push(`<li><strong class="text-amber-400">Rule 1 (High Amount):</strong> Value exceeds high-amount threshold ($${Number(r.Amount).toLocaleString()}).</li>`);
+      if (r.Rule_Late_Night === 1) rules.push(`<li><strong class="text-indigo-400">Rule 2 (Late Night):</strong> Executed at ${r.Transaction_Time} within the 23:00 to 05:59 window.</li>`);
+      if (r.Rule_High_Frequency === 1) rules.push(`<li><strong class="text-red-400">Rule 3 (High Frequency):</strong> Rapid account burst (${r.Txn_Count_1H} transactions in 1 hour).</li>`);
+
+      document.getElementById("modalRulesList").innerHTML = rules.join("");
+      document.getElementById("txnModal").classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById("txnModal").classList.add("hidden");
+    }
+
+    async function loadAccounts() {
+      try {
+        const res = await fetch("/api/accounts/risk").then(r => r.json());
+        document.getElementById("repeat-acc-count").innerText = res.repeat_offenders_count;
+
+        const tbody = document.getElementById("accountsTableBody");
+        tbody.innerHTML = res.top_accounts.map(a => `
+          <tr class="hover:bg-slate-800/50 transition">
+            <td class="p-3.5 font-mono text-indigo-300 font-bold">${a.Account_ID}</td>
+            <td class="p-3.5 text-slate-300">${a.Transactions}</td>
+            <td class="p-3.5 font-bold text-white">$${Number(a.Total_Value).toLocaleString()}</td>
+            <td class="p-3.5 text-slate-400">$${Number(a.Avg_Amount).toLocaleString()}</td>
+            <td class="p-3.5"><span class="px-2 py-0.5 rounded-full ${a.Suspicious_Transactions > 1 ? 'bg-red-500/20 text-red-400 font-bold' : 'bg-slate-800 text-slate-400'}">${a.Suspicious_Transactions}</span></td>
+            <td class="p-3.5 font-semibold text-amber-400">${a.Suspicious_Rate}%</td>
+            <td class="p-3.5"><span class="px-2 py-0.5 rounded text-[11px] ${a.Suspicious_Transactions >= 3 ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">Under Active Monitoring</span></td>
+          </tr>
+        `).join("");
+      } catch (e) {
+        console.error("Accounts load failed:", e);
+      }
+    }
+
+    async function loadQuestions() {
+      try {
+        const data = await fetch("/api/questions").then(r => r.json());
+        const container = document.getElementById("questionsContainer");
+        container.innerHTML = Object.entries(data).map(([k, q]) => `
+          <div class="p-4 bg-slate-800/50 border border-slate-700/60 rounded-xl space-y-1.5">
+            <h5 class="text-xs font-bold text-indigo-300 uppercase tracking-wider">${k}: ${q.question}</h5>
+            <p class="text-xs text-slate-200 leading-relaxed"><strong class="text-emerald-400">Finding:</strong> ${q.answer}</p>
+          </div>
+        `).join("");
+      } catch (e) {
+        console.error("Questions load failed:", e);
+      }
+    }
+
+    async function applyStudioParams(e) {
+      e.preventDefault();
+      const form = document.getElementById("studioForm");
+      const method = form.amount_method.value;
+      const customAmt = document.getElementById("customAmountInput").value;
+      const freq = parseInt(document.getElementById("freqInput").value);
+      const nightStart = parseInt(document.getElementById("nightStartInput").value);
+      const nightEnd = parseInt(document.getElementById("nightEndInput").value);
+      const cutoff = parseInt(document.getElementById("scoreCutoffInput").value);
+
+      const payload = {
+        amount_method: method,
+        custom_amount_threshold: customAmt ? parseFloat(customAmt) : null,
+        late_night_start: nightStart,
+        late_night_end: nightEnd,
+        freq_threshold: freq,
+        suspicion_threshold: cutoff
+      };
+
+      try {
+        const res = await fetch("/api/screen", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
+        alert("Screening parameters applied! Dashboard KPIs updated.");
+        switchTab("overview");
+        loadDashboard();
+      } catch (err) {
+        alert("Failed to apply screening parameters: " + err);
+      }
+    }
+
+    function resetStudioDefaults() {
+      document.getElementById("customAmountInput").value = "";
+      document.getElementById("freqInput").value = 5;
+      document.getElementById("freqValueLabel").innerText = "5 txns / hour";
+      document.getElementById("scoreCutoffInput").value = 2;
+      document.getElementById("scoreCutoffLabel").innerText = "Score >= 2";
+    }
+
+    async function triggerDataGen() {
+      const n = parseInt(document.getElementById("genCountSelect").value);
+      const seed = parseInt(document.getElementById("genSeedInput").value) || 42;
+
+      try {
+        const res = await fetch(`/api/generate?n=${n}&seed=${seed}`, { method: "POST" }).then(r => r.json());
+        alert(res.message);
+        switchTab("overview");
+        loadDashboard();
+      } catch (err) {
+        alert("Data generation failed: " + err);
+      }
+    }
+
+    async function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData
+        }).then(r => r.json());
+
+        if (res.status === "success") {
+          alert(res.message);
+          switchTab("overview");
+          loadDashboard();
+        } else {
+          alert("Upload error: " + JSON.stringify(res));
+        }
+      } catch (err) {
+        alert("Upload failed: " + err);
+      }
+    }
+
+    function exportCSV() {
+      window.location.href = "/api/export/suspicious";
+    }
+
+    function quickRefresh() {
+      loadDashboard();
+    }
+  </script>
+</body>
+</html>

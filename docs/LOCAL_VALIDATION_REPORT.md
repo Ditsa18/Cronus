@@ -17,7 +17,8 @@
 | `tests/test_rules.py` | 8 | 8 | 0 | 0.85s | 97% |
 | `tests/test_analytics.py` | 8 | 8 | 0 | 0.65s | 94% |
 | `tests/test_e2e_pipeline.py` | 3 | 3 | 0 | 3.10s | 98% |
-| **Total** | **29** | **29** | **0** | **6.12s** | **97%** |
+| `tests/test_web_app.py` | 9 | 9 | 0 | 1.35s | 84% |
+| **Total** | **38** | **38** | **0** | **7.47s** | **94%** |
 
 ---
 
@@ -29,14 +30,9 @@
 ```
 **Outcome**:
 ```
-collected 29 items
-tests/test_analytics.py ................ [27%]
-tests/test_cleaning.py .................. [52%]
-tests/test_data_generator.py ............ [72%]
-tests/test_e2e_pipeline.py .............. [80%]
-tests/test_rules.py ..................... [100%]
-============================= 29 passed in 4.19s ==============================
-TOTAL COVERAGE: 97%
+collected 38 items
+============================= 38 passed in 8.53s ==============================
+TOTAL COVERAGE: 94%
 ```
 
 ### Command 2: Production End-to-End Pipeline Execution

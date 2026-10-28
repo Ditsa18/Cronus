@@ -179,21 +179,25 @@ def evaluate_against_ground_truth(df: pd.DataFrame) -> Dict[str, Any]:
         margins=True,
     )
 
+    clean_matrix = {
+        str(k): {str(sub_k): int(sub_v) for sub_k, sub_v in v.items()}
+        for k, v in crosstab_df.to_dict().items()
+    }
+
     return {
         "status": "evaluated",
-        "total": total,
-        "tp": tp,
-        "fp": fp,
-        "tn": tn,
-        "fn": fn,
-        "precision": precision,
-        "recall": recall,
-        "f1_score": f1,
-        "specificity": specificity,
-        "false_positive_rate": fpr,
-        "accuracy": accuracy,
-        "confusion_matrix": crosstab_df.to_dict(),
-        "crosstab_dataframe": crosstab_df,
+        "total": int(total),
+        "tp": int(tp),
+        "fp": int(fp),
+        "tn": int(tn),
+        "fn": int(fn),
+        "precision": float(precision),
+        "recall": float(recall),
+        "f1_score": float(f1),
+        "specificity": float(specificity),
+        "false_positive_rate": float(fpr),
+        "accuracy": float(accuracy),
+        "confusion_matrix": clean_matrix,
     }
 
 
