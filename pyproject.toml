@@ -1,0 +1,29 @@
+[project]
+name = "bank-fraud-detection"
+version = "1.0.0"
+description = "Explainable Rule-Based Bank Transaction Fraud Detection & Suspicious Activity Analytics"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas>=3.1.0",
+    "numpy>=2.4.0",
+    "matplotlib>=3.11.0",
+    "scikit-learn>=1.9.0",
+    "scipy>=1.17.0",
+    "tabulate>=0.10.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.0",
+    "pytest-cov>=7.0.0"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --strict-markers"
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["tests/*"]
