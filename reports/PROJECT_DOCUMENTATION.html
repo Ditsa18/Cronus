@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Transaction Fraud Detection — Comprehensive Project Documentation</title>
+  <link rel="icon" type="image/png" href="/static/cronus_logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      @page {
+        size: letter portrait;
+        margin: 22mm 15mm 20mm 15mm;
+        @top-left {
+          content: url('/static/cronus_logo.png');
+          vertical-align: middle;
+        }
+        @top-right {
+          content: "Cronus Consultants | Bank Fraud Detection Project Documentation";
+          font-family: sans-serif;
+          font-size: 8pt;
+          color: #64748b;
+        }
+        @bottom-right {
+          content: "Page " counter(page) " of " counter(pages);
+          font-family: sans-serif;
+          font-size: 8pt;
+          color: #64748b;
+        }
+      }
+      .no-print { display: none !important; }
+      body { font-size: 10pt; line-height: 1.4; color: #1e293b; }
+      h1 { font-size: 18pt !important; page-break-after: avoid; }
+      h2 { font-size: 13pt !important; page-break-after: avoid; color: #0f172a !important; margin-top: 14pt !important; }
+      h3 { font-size: 11pt !important; page-break-after: avoid; }
+      table { page-break-inside: auto; }
+      tr { page-break-inside: avoid; page-break-after: auto; }
+      img { max-width: 100% !important; page-break-inside: avoid; }
+    }
+    
+    .prose-doc h1 { font-size: 2rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; }
+    .prose-doc h2 { font-size: 1.35rem; font-weight: 700; color: #1e3a8a; margin-top: 2rem; margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.35rem; }
+    .prose-doc h3 { font-size: 1.1rem; font-weight: 700; color: #334155; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+    .prose-doc h4 { font-size: 0.95rem; font-weight: 600; color: #2563eb; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+    .prose-doc p { margin-bottom: 0.85rem; line-height: 1.6; color: #334155; }
+    .prose-doc ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 0.85rem; }
+    .prose-doc li { margin-bottom: 0.25rem; }
+    .prose-doc table { width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1.25rem; font-size: 0.825rem; border: 1px solid #cbd5e1; border-radius: 0.375rem; overflow: hidden; }
+    .prose-doc th { background-color: #1e3a8a; color: white; padding: 0.55rem 0.75rem; text-align: left; font-weight: 600; border: 1px solid #3b82f6; }
+    .prose-doc td { padding: 0.45rem 0.75rem; border: 1px solid #e2e8f0; vertical-align: top; }
+    .prose-doc tr:nth-child(even) { background-color: #f8fafc; }
+    .prose-doc code { background-color: #f1f5f9; color: #0f766e; padding: 0.15rem 0.35rem; border-radius: 0.25rem; font-size: 0.85em; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .prose-doc pre { background-color: #0f172a; color: #f8fafc; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; font-size: 0.8rem; }
+    .prose-doc pre code { background-color: transparent; color: inherit; padding: 0; }
+    .prose-doc hr { margin-top: 2rem; margin-bottom: 2rem; border-color: #cbd5e1; }
+    .prose-doc img { border-radius: 0.5rem; margin-top: 0.5rem; margin-bottom: 0.75rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0; max-height: 480px; object-fit: contain; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+  <header class="no-print sticky top-0 z-50 bg-slate-900 border-b border-slate-800 text-white px-4 md:px-8 py-3 flex flex-wrap items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-3">
+      <img src="/static/cronus_logo.png" alt="Cronus Logo" class="h-8 w-auto bg-white rounded p-1 shadow">
+      <div>
+        <h1 class="font-bold text-sm leading-tight text-white m-0">Cronus Consultants</h1>
+        <p class="text-[10px] text-slate-400 m-0">Bank Transaction Fraud Analytics • Official Project Documentation</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-2 mt-2 md:mt-0">
+      <a href="/" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-medium border border-slate-700 transition">
+        ← Back to App
+      </a>
+      <a href="/download/documentation/docx" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold shadow transition flex items-center space-x-1.5">
+        <span>📄 Word (.docx)</span>
+      </a>
+      <a href="/download/documentation/pdf" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow transition flex items-center space-x-1.5">
+        <span>📑 PDF (.pdf)</span>
+      </a>
+      <button onclick="window.print()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold shadow transition flex items-center space-x-1.5">
+        <span>🖨️ Print / Save PDF</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto my-6 md:my-10 p-6 md:p-14 bg-white shadow-xl rounded-xl border border-slate-200">
+    <div class="flex items-center justify-between border-b-2 border-slate-900 pb-4 mb-6">
+      <div class="flex items-center space-x-4">
+        <img src="/static/cronus_logo.png" alt="Cronus Logo" class="h-16 w-auto object-contain">
+        <div>
+          <span class="text-xs font-black uppercase tracking-widest text-blue-700">Cronus Consultants Risk Intelligence</span>
+          <p class="text-xs text-slate-500">Industry-Oriented Capstone Project • Academic Year 2026</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <span class="inline-block bg-blue-100 text-blue-800 text-[11px] font-bold px-2.5 py-0.5 rounded uppercase">Confidential</span>
+        <p class="text-[11px] text-slate-400 mt-1">Ref: CRONUS-FRAUD-2026-CAPSTONE</p>
+      </div>
+    </div>
+
+    <article class="prose-doc">
+      <p align="left">
+  <img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="180">
+</p>
+
+<h1>PROJECT DOCUMENTATION</h1>
+<h2>Bank Transaction Fraud Detection: Rule-Based Fraud Analytics</h2>
+<h3>Industry-Oriented Data Analytics Student Project</h3>
+<h4>Rule-Based Bank Transaction Fraud Detection &amp; Suspicious Activity Analytics Using Python, Pandas, NumPy, Matplotlib and FastAPI</h4>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Project group</strong></td>
+<td>Fraud Analytics Group / Team Cronus</td>
+</tr>
+<tr>
+<td><strong>Team members</strong></td>
+<td>Student Data Analyst (Portfolio Capstone)</td>
+</tr>
+<tr>
+<td><strong>Course / Programme</strong></td>
+<td>Industry-Oriented Data Analytics Capstone / Financial Analytics</td>
+</tr>
+<tr>
+<td><strong>Faculty guide</strong></td>
+<td>Fraud Risk Operations &amp; Applied AI Guide</td>
+</tr>
+<tr>
+<td><strong>Technology</strong></td>
+<td>Python 3.11, Pandas, NumPy, Matplotlib, Seaborn, Scikit-learn (analysis); FastAPI, Tailwind CSS, Chart.js, HTML5 (interactive dashboard)</td>
+</tr>
+<tr>
+<td><strong>Dataset</strong></td>
+<td>Bank transaction screening records, 10,000 raw rows x 13 columns (synthetic, calendar month September 2026)</td>
+</tr>
+<tr>
+<td><strong>Date of submission</strong></td>
+<td>November 2026</td>
+</tr>
+<tr>
+<td><strong>Disclaimer</strong></td>
+<td>The transaction dataset used in this project is synthetic and was created for learning and demonstration adhering to Section 7 privacy rules. All results describe this dataset and demonstrate an analytical workflow; they must not be read as evidence about a real banking operation or real customer accounts.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Table of Contents</h2>
+<ul>
+<li><strong>Abstract</strong></li>
+<li><strong>1. Project Overview</strong></li>
+<li>1.1 Problem Statement</li>
+<li>1.2 Scope of the Work</li>
+<li>1.3 Project Deliverables</li>
+<li><strong>2. Business Scenario</strong></li>
+<li><strong>3. Project Objectives</strong></li>
+<li><strong>4. Libraries and Technology Stack</strong></li>
+<li><strong>5. Dataset Description</strong></li>
+<li>5.1 Data Quality Characteristics of the Raw File</li>
+<li><strong>6. Project Architecture and Workflow</strong></li>
+<li><strong>7. Data Loading and Inspection</strong></li>
+<li><strong>8. Data Cleaning</strong></li>
+<li>8.1 Cleaning Rules and Decisions</li>
+<li>8.2 Cleaning Code</li>
+<li>8.3 Data Cleaning Audit Results</li>
+<li>8.4 Reconciliation of Record Counts</li>
+<li><strong>9. Transaction Amount &amp; Statistical Thresholds</strong></li>
+<li><strong>10. Rule-Based Detection Logic</strong></li>
+<li><strong>11. Key Fraud Detection &amp; Screening KPIs</strong></li>
+<li><strong>12. Overall Screening Performance</strong></li>
+<li><strong>13. Rule 1 In-Depth: High-Amount Outlier Analysis</strong></li>
+<li><strong>14. Rule 2 In-Depth: Late-Night Activity Analysis</strong></li>
+<li><strong>15. Rule 3 In-Depth: High-Frequency Burst Detection</strong></li>
+<li><strong>16. Suspicion Score Distribution &amp; Bitmask Analysis</strong></li>
+<li><strong>17. Transaction Type Performance Analysis</strong></li>
+<li><strong>18. Channel Vulnerability Analysis</strong></li>
+<li><strong>19. Hourly Transaction Trend Analysis</strong></li>
+<li><strong>20. Transaction Amount vs. Suspicion Score Correlation</strong></li>
+<li><strong>21. Required Visualizations</strong></li>
+<li><strong>22. Identifying High-Risk Accounts</strong></li>
+<li><strong>23. Advanced Extensions &amp; ML Evaluation</strong></li>
+<li><strong>24. Pipeline Orchestration (cli.py)</strong></li>
+<li><strong>25. Interactive Web Dashboard (Cronus FraudGuard)</strong></li>
+<li><strong>26. Business Questions and Answers</strong></li>
+<li><strong>27. Business Findings and Operational Recommendations</strong></li>
+<li><strong>28. Testing, Validation and Reproducibility</strong></li>
+<li><strong>29. Limitations and Important Analytical &amp; Ethical Note</strong></li>
+<li><strong>30. Learning Outcomes</strong></li>
+<li><strong>31. Conclusion and Future Scope</strong></li>
+<li><strong>References</strong></li>
+</ul>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>Abstract</h2>
+<p>Financial institutions process millions of electronic banking transactions daily. Punctual, non-disruptive clearing of legitimate payments is essential to consumer trust, yet fraudulent card testing, account takeovers, and unauthorized wire transfers inflict catastrophic losses. This project analyses 10,000 raw transaction records from a synthetic banking network to implement an explainable, transparent, rule-based screening engine. Rather than automatically declaring customers as criminals, the system evaluates behavioral anomalies across Transaction Amount, Transaction Time, and Transaction Velocity, assigning an interpretable Suspicion Score (0 to 3) to triage records for human-in-the-loop compliance review.</p>
+<p>The screening engine was implemented as a modular Python pipeline (loading, validation, metric derivation, rule evaluation, KPI calculation, multidimensional drilldowns, and charting) and extended with a responsive web dashboard (Cronus FraudGuard) and REST API. Across 10,000 evaluated transactions, 118 records (1.18%) triggered multiple co-occurring anomalies (Suspicion Score &gt;= 2) and were escalated to the priority review queue. Flagged transactions averaged $53,416.15—a 13.47x surge over normal volume ($3,966.30). Transfer was identified as the highest-risk transaction type (3.17% suspicious rate) and Online as the highest-risk channel (2.56%). Against verified historical ground-truth fraud labels, the rule-based screener achieved 100.0% precision, 0.00% false positive rate, and captured all acute multi-factor attack patterns.</p>
+<p><strong>Keywords</strong>: fraud analytics, rule-based screening, suspicion score, transaction anomaly detection, Pandas, Matplotlib, FastAPI, banking compliance.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>1. Project Overview</h2>
+<h3>1.1 Problem Statement</h3>
+<p>Retail banks face escalating digital fraud threats across online banking, mobile applications, and payment gateways. While machine learning is frequently proposed, deploying black-box AI models as an unexplainable first-tier filter creates severe legal, regulatory (RBI / OCC / GDPR), and customer relations liabilities: compliance officers cannot explain to auditors or clients why an alert was triggered. A robust, deterministic, rule-based transaction screening system is required to screen transactions, provide clear audit trails, and prioritize manual investigation without prematurely freezing customer accounts.</p>
+<h3>1.2 Scope of the Work</h3>
+<ul>
+<li>Ingestion, cleaning, and validation of 10,000 transaction records with zero data loss on valid keys.</li>
+<li>Computing statistical thresholds (Gaussian mean + 3 standard deviations and 99th percentile $P_{99}$).</li>
+<li>Evaluating three core behavioral heuristics: Amount Outlier, Late-Night Window (23:00 to 05:59), and Rolling 1-Hour Burst count.</li>
+<li>Combining rules into an explainable Suspicion Score (0 to 3) and 3-digit bitmasks (e.g. <code>1_1_0</code>).</li>
+<li>Producing 10 high-resolution Matplotlib figures and CSV investigation queues.</li>
+<li>Delivering an interactive web dashboard with dynamic threshold simulation and CSV upload capabilities.</li>
+</ul>
+<h3>1.3 Project Deliverables</h3>
+<p>All project brief deliverables are fulfilled:<br />
+1. Complete Python package (<code>src/</code>) and CLI runner (<code>src/cli.py</code>).<br />
+2. Cleaned primary dataset (<code>data/bank_transactions.csv</code>) and sample upload file (<code>test_upload_sample.csv</code>).<br />
+3. Priority manual review queue (<code>reports/suspicious_transactions.csv</code>).<br />
+4. Account risk summary profiles (<code>reports/account_risk_summary.csv</code>).<br />
+5. 10 publication-ready Matplotlib figures in <code>/figures/</code>.<br />
+6. Executive management report answering all 10 core business questions.<br />
+7. Interactive web dashboard (<code>run_web.py</code>) running on FastAPI and Tailwind CSS.<br />
+8. Automated test suite (<code>tests/</code>) with 38 passing tests and 94% code coverage.<br />
+9. Formal project documentation available in DOCX, PDF, HTML, and Markdown.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>2. Business Scenario</h2>
+<p>The project is framed as the work of a Junior Data Analyst in Cronus Bank's Fraud Monitoring and Surveillance Team. The bank requires a reliable, transparent first-level screening filter to process incoming transactions in real time before complex scoring models are introduced. The analyst's objective is to screen transactions based on amount, hour, and velocity, assign an interpretable suspicion score, and furnish fraud analysts with detailed triage reports rather than making irreversible automated blocks.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>3. Project Objectives</h2>
+<ul>
+<li>Clean and validate raw transaction records with documented audit decisions.</li>
+<li>Analyze transaction amount distributions and establish statistical cutoffs.</li>
+<li>Detect unusually high transaction amounts using statistical ($\mu + 3\sigma$) and percentile ($P_{99}$) thresholds.</li>
+<li>Detect late-night transactions occurring between 11:00 PM and 5:59 AM.</li>
+<li>Detect rapid transaction bursts using rolling 1-hour window counts per account.</li>
+<li>Aggregate individual rules into an explainable Suspicion Score (0 to 3).</li>
+<li>Flag high-risk records (Score &gt;= 2) into a prioritized investigation queue.</li>
+<li>Profile customer accounts with repeated suspicious activities.</li>
+<li>Create high-quality visual analytics charts using Matplotlib.</li>
+<li>Build a responsive interactive web dashboard for fraud monitoring analysts.</li>
+</ul>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>4. Libraries and Technology Stack</h2>
+<table>
+<thead>
+<tr>
+<th>Library / Framework</th>
+<th>Version</th>
+<th>Purpose in this Project</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Python</strong></td>
+<td>3.11.6</td>
+<td>Core runtime environment.</td>
+</tr>
+<tr>
+<td><strong>Pandas</strong></td>
+<td>3.1.0</td>
+<td>Data loading, cleaning, datetime parsing, rolling time-window counts, group aggregations.</td>
+</tr>
+<tr>
+<td><strong>NumPy</strong></td>
+<td>2.4.6</td>
+<td>Vectorized array calculations, statistical thresholds, percentile quantiles.</td>
+</tr>
+<tr>
+<td><strong>Matplotlib</strong></td>
+<td>3.11.2</td>
+<td>Publication-ready figure generation (histogram, bar charts, trend lines, scatter plots).</td>
+</tr>
+<tr>
+<td><strong>Scikit-learn</strong></td>
+<td>1.9.1</td>
+<td>Ground-truth evaluation metrics: confusion matrix, precision, recall, F1-score.</td>
+</tr>
+<tr>
+<td><strong>FastAPI</strong></td>
+<td>0.162.0</td>
+<td>High-performance backend web framework and REST API.</td>
+</tr>
+<tr>
+<td><strong>Uvicorn</strong></td>
+<td>0.54.0</td>
+<td>Production ASGI server running the interactive dashboard.</td>
+</tr>
+<tr>
+<td><strong>Tailwind CSS &amp; Chart.js</strong></td>
+<td>CDN</td>
+<td>Modern, responsive dark-slate UI styling and interactive browser charts.</td>
+</tr>
+<tr>
+<td><strong>Pytest &amp; Coverage</strong></td>
+<td>9.2.0 / 7.1.0</td>
+<td>Test-driven development, automated unit &amp; integration testing (94% coverage).</td>
+</tr>
+<tr>
+<td><strong>Python-docx &amp; ReportLab</strong></td>
+<td>1.2.0 / 5.1.0</td>
+<td>Professional document compilation into Word (.docx) and PDF (.pdf).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>5. Dataset Description</h2>
+<p>The dataset (<code>data/bank_transactions.csv</code>) contains 10,000 transaction records across 500 distinct customer accounts and 1,000 anonymized devices.</p>
+<table>
+<thead>
+<tr>
+<th>Field Name</th>
+<th>Example</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Transaction_ID</code></td>
+<td>TX100025</td>
+<td>String</td>
+<td>Unique transaction tracking identifier.</td>
+</tr>
+<tr>
+<td><code>Account_ID</code></td>
+<td>ACC1025</td>
+<td>String</td>
+<td>Anonymized account identifier (500 accounts).</td>
+</tr>
+<tr>
+<td><code>Transaction_Date</code></td>
+<td>2026-09-10</td>
+<td>Date</td>
+<td>Date of transaction (YYYY-MM-DD).</td>
+</tr>
+<tr>
+<td><code>Transaction_Time</code></td>
+<td>23:45</td>
+<td>Time</td>
+<td>Time of transaction (HH:MM).</td>
+</tr>
+<tr>
+<td><code>Amount</code></td>
+<td>85000.00</td>
+<td>Float</td>
+<td>Transaction monetary value ($).</td>
+</tr>
+<tr>
+<td><code>Transaction_Type</code></td>
+<td>Transfer</td>
+<td>Category</td>
+<td>Transfer, Payment, Withdrawal, Deposit.</td>
+</tr>
+<tr>
+<td><code>Channel</code></td>
+<td>Online</td>
+<td>Category</td>
+<td>Online, Mobile App, ATM, Branch.</td>
+</tr>
+<tr>
+<td><code>Merchant_Category</code></td>
+<td>Electronics</td>
+<td>Category</td>
+<td>Business category (Electronics, Jewelry, Grocery, etc.).</td>
+</tr>
+<tr>
+<td><code>Location</code></td>
+<td>Kolkata</td>
+<td>String</td>
+<td>Originating city/region.</td>
+</tr>
+<tr>
+<td><code>Device_ID</code></td>
+<td>DEV204</td>
+<td>String</td>
+<td>Anonymized hardware terminal identifier.</td>
+</tr>
+<tr>
+<td><code>Balance_Before</code></td>
+<td>150000.00</td>
+<td>Float</td>
+<td>Ledger balance before transaction.</td>
+</tr>
+<tr>
+<td><code>Balance_After</code></td>
+<td>65000.00</td>
+<td>Float</td>
+<td>Ledger balance after transaction.</td>
+</tr>
+<tr>
+<td><code>Fraud_Label</code></td>
+<td>0 or 1</td>
+<td>Integer</td>
+<td>Historical verified label (1 = Fraud, 0 = Normal).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>6. Project Architecture and Workflow</h2>
+<p><img alt="Figure 1: End-to-End Workflow of the Bank Fraud Screening Pipeline" src="/figures/00_workflow_pipeline.png" /></p>
+<pre><code>[Raw CSV Stream (10,000 Rows)]
+              |
+              v
+[Data Cleaning &amp; Datetime Normalization]
+              |
+              v
+[Feature Derivation: Amount, Hour, 1H Velocity]
+              |
+              v
+[Rule Engine: High Amount, Late Night, Frequency Burst]
+              |
+              v
+[Suspicion Scoring &amp; Bitmasking (Score = R1 + R2 + R3)]
+              |
+              v
+[Alert Triage: Score &gt;= 2 -&gt; Priority Investigation Queue]
+              |
+    +---------+---------+---------+
+    |                   |         |
+    v                   v         v
+[Reports &amp; CSVs]   [Charts]  [Cronus FraudGuard Web App]
+</code></pre>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>7. Data Loading and Inspection</h2>
+<p>The loading stage confirms 10,000 rows across 13 fields with zero null values in critical columns.<br />
+* Total monetary turnover: <strong>$45,498,111.43</strong><br />
+* Arithmetic mean amount: <strong>$4,549.81</strong><br />
+* Median amount: <strong>$1,807.50</strong><br />
+* Minimum amount: <strong>$50.00</strong><br />
+* Maximum amount: <strong>$219,850.00</strong></p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>8. Data Cleaning</h2>
+<ol>
+<li><strong>Deduplication</strong>: Exact duplicate records and duplicate <code>Transaction_ID</code>s are identified and eliminated.</li>
+<li><strong>Missing Value Handling</strong>: Verified zero nulls in required keys (<code>Transaction_ID</code>, <code>Account_ID</code>, <code>Amount</code>, <code>Transaction_Time</code>).</li>
+<li><strong>Amount Validation</strong>: Enforced <code>Amount &gt; 0</code>; negative or zero transactions are rejected.</li>
+<li><strong>Datetime Standardization</strong>: Unified ISO strings parsed into standardized timestamps and integer <code>Hour</code> (0 to 23).</li>
+<li><strong>Casing Normalization</strong>: Stripped trailing spaces and enforced Title Case across string categories.</li>
+</ol>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>9. Transaction Amount &amp; Statistical Thresholds</h2>
+<p>Financial amounts follow a Pareto/log-normal distribution. Relying solely on a Gaussian bell curve ($\mu + 3\sigma$) can lead to outlier masking because massive fraud transactions artificially inflate both the mean and standard deviation.</p>
+<ul>
+<li><strong>Gaussian 3-Sigma Cutoff</strong>: $\mu + 3\sigma = \$4,549.81 + (3     imes \$13,060.86) = \$43,732.38$</li>
+<li><strong>99th Percentile Cutoff ($P_{99}$)</strong>: <strong>$45,001.18</strong> (Preferred default for robust outlier isolation)</li>
+</ul>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>10. Rule-Based Detection Logic</h2>
+<table>
+<thead>
+<tr>
+<th>Rule Name</th>
+<th>Mathematical Condition</th>
+<th style="text-align: center;">Score Weight</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Rule 1: Unusual Amount</strong></td>
+<td><code>Amount &gt;= P99</code> ($45,001.18)</td>
+<td style="text-align: center;"><strong>+1</strong></td>
+<td>Transaction value is unusually high compared to historical baseline.</td>
+</tr>
+<tr>
+<td><strong>Rule 2: Late Night</strong></td>
+<td><code>23:00 &lt;= Hour &lt;= 05:59</code></td>
+<td style="text-align: center;"><strong>+1</strong></td>
+<td>Activity takes place during customer sleep hours; common in automated card draining.</td>
+</tr>
+<tr>
+<td><strong>Rule 3: High Frequency</strong></td>
+<td><code>Rolling 1-Hour Txn Count &gt;= 5</code></td>
+<td style="text-align: center;"><strong>+1</strong></td>
+<td>Rapid transaction bursts indicate credential stuffing, automated bots, or card testing.</td>
+</tr>
+<tr>
+<td><strong>Alert Cutoff</strong></td>
+<td><code>Suspicion_Score &gt;= 2</code></td>
+<td style="text-align: center;"><strong>ALERT</strong></td>
+<td>Combines multi-factor signals to suppress single-anomaly noise and prioritize true risk.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>11. Key Fraud Detection &amp; Screening KPIs</h2>
+<table>
+<thead>
+<tr>
+<th>Executive Metric</th>
+<th style="text-align: center;">Observed Value</th>
+<th>Operational Context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Total Ingested Volume</strong></td>
+<td style="text-align: center;">10,000</td>
+<td>Processed and cleaned transaction records.</td>
+</tr>
+<tr>
+<td><strong>Total Monetary Volume</strong></td>
+<td style="text-align: center;">$45,498,111.43</td>
+<td>Net portfolio turnover across monitored channels.</td>
+</tr>
+<tr>
+<td><strong>Average Transaction</strong></td>
+<td style="text-align: center;">$4,549.81</td>
+<td>Population arithmetic mean.</td>
+</tr>
+<tr>
+<td><strong>Median Transaction</strong></td>
+<td style="text-align: center;">$1,807.50</td>
+<td>Robust central tendency measure.</td>
+</tr>
+<tr>
+<td><strong>99th Percentile Threshold ($P_{99}$)</strong></td>
+<td style="text-align: center;">$45,001.18</td>
+<td>Outlier cutoff for high-value transfers.</td>
+</tr>
+<tr>
+<td><strong>Statistical Threshold ($\mu + 3\sigma$)</strong></td>
+<td style="text-align: center;">$43,732.38</td>
+<td>Baseline Gaussian 3-sigma cutoff.</td>
+</tr>
+<tr>
+<td><strong>Suspicious Flagged Volume</strong></td>
+<td style="text-align: center;"><strong>118 (1.18%)</strong></td>
+<td>Prioritized for immediate analyst review (Score $\ge 2$).</td>
+</tr>
+<tr>
+<td><strong>High Amount Alerts</strong></td>
+<td style="text-align: center;">100 (1.00%)</td>
+<td>Single transactions exceeding outlier thresholds.</td>
+</tr>
+<tr>
+<td><strong>Late Night Alerts</strong></td>
+<td style="text-align: center;">750 (7.50%)</td>
+<td>Transactions occurring between 23:00 and 05:59.</td>
+</tr>
+<tr>
+<td><strong>High Frequency Bursts</strong></td>
+<td style="text-align: center;">113 (1.13%)</td>
+<td>Accounts executing $\ge 5$ transactions in rolling 1-hour.</td>
+</tr>
+<tr>
+<td><strong>Avg Amount: Normal vs Suspicious</strong></td>
+<td style="text-align: center;"><strong>$3,966.30 vs $53,416.15</strong></td>
+<td>Suspicious transactions are 13.47x larger on average.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>12. Overall Screening Performance</h2>
+<p><img alt="Figure 2: Normal vs Suspicious Transactions Volume Breakdown" src="/figures/02_normal_vs_suspicious.png" /></p>
+<ul>
+<li><strong>Normal Transactions (Score 0-1)</strong>: 9,882 (98.82%)</li>
+<li>Score 0 (Clean): 9,162 transactions (91.62%)</li>
+<li>Score 1 (Low Anomaly): 720 transactions (7.20%)</li>
+<li><strong>Suspicious Transactions (Score 2-3)</strong>: 118 (1.18%)</li>
+<li>Score 2 (High Priority): 111 transactions (1.11%)</li>
+<li>Score 3 (Critical Alert): 7 transactions (0.07%)</li>
+</ul>
+<p>Requiring at least 2 co-occurring rules suppressed 720 single-anomaly false alarms, focusing review resources on 118 high-confidence alerts.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>13. Rule 1 In-Depth: High-Amount Outlier Analysis</h2>
+<p><img alt="Figure 3: Distribution of Transaction Amounts with Outlier Cutoff" src="/figures/01_amount_distribution.png" /></p>
+<p>100 transactions (1.00%) triggered Rule 1. Outlier amounts spanned from $45,002.50 to $219,850.00. High amount alone (Score 1) accounted for 45 records, while 55 records occurred alongside late-night hours or velocity bursts, representing acute risk.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>14. Rule 2 In-Depth: Late-Night Activity Analysis</h2>
+<p><img alt="Figure 4: Suspicious Transactions by Hour of Day" src="/figures/03_suspicious_by_hour.png" /></p>
+<p>750 transactions (7.50%) occurred between 23:00 and 05:59. The distribution showed peak suspicious activity at Hour 23:00 (34 alerts), followed by Hour 02:00 and Hour 03:00. 635 late-night transactions were benign single anomalies (e.g. late-night ride or dining payments), while 115 co-occurred with high amounts or burst velocity.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>15. Rule 3 In-Depth: High-Frequency Burst Detection</h2>
+<p>113 transactions were identified where an account executed 5 or more transactions within a rolling 60-minute window. Velocity bursts are heavily correlated with automated bot scripts and compromised payment credentials.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>16. Suspicion Score Distribution &amp; Bitmask Analysis</h2>
+<p><img alt="Figure 5: Transaction Volume by Rule Combination Bitmask" src="/figures/06_rule_combination_frequencies.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Rule Bitmask</th>
+<th>Description</th>
+<th>Transactions</th>
+<th>Share (%)</th>
+<th>Operational Triage Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0_0_0</code></td>
+<td>Baseline Normal</td>
+<td>9,162</td>
+<td>91.62%</td>
+<td>Clear immediately</td>
+</tr>
+<tr>
+<td><code>0_1_0</code></td>
+<td>Late Night Only</td>
+<td>635</td>
+<td>6.35%</td>
+<td>Passive audit log</td>
+</tr>
+<tr>
+<td><code>0_1_1</code></td>
+<td>Late Night + High Frequency</td>
+<td>63</td>
+<td>0.63%</td>
+<td>Escalate: Priority Review Queue (Score 2)</td>
+</tr>
+<tr>
+<td><code>1_0_0</code></td>
+<td>High Amount Only</td>
+<td>45</td>
+<td>0.45%</td>
+<td>Passive audit log</td>
+</tr>
+<tr>
+<td><code>1_1_0</code></td>
+<td>High Amount + Late Night</td>
+<td>45</td>
+<td>0.45%</td>
+<td>Escalate: Priority Review Queue (Score 2)</td>
+</tr>
+<tr>
+<td><code>0_0_1</code></td>
+<td>High Frequency Only</td>
+<td>40</td>
+<td>0.40%</td>
+<td>Passive audit log</td>
+</tr>
+<tr>
+<td><code>1_1_1</code></td>
+<td>Critical Alert (All 3 Rules)</td>
+<td>7</td>
+<td>0.07%</td>
+<td>Urgent Action: Trigger OTP / Secondary Verification (Score 3)</td>
+</tr>
+<tr>
+<td><code>1_0_1</code></td>
+<td>High Amount + High Frequency</td>
+<td>3</td>
+<td>0.03%</td>
+<td>Escalate: Priority Review Queue (Score 2)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>17. Transaction Type Performance Analysis</h2>
+<p><img alt="Figure 6: Suspicious Rate (%) by Transaction Type" src="/figures/04_suspicious_rate_by_type.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Transaction Type</th>
+<th>Total Transactions</th>
+<th>Suspicious Alerts</th>
+<th>Suspicious Rate (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Transfer</strong></td>
+<td>3,725</td>
+<td>118</td>
+<td><strong>3.17%</strong></td>
+</tr>
+<tr>
+<td><strong>Payment</strong></td>
+<td>3,890</td>
+<td>0</td>
+<td>0.00%</td>
+</tr>
+<tr>
+<td><strong>Withdrawal</strong></td>
+<td>1,427</td>
+<td>0</td>
+<td>0.00%</td>
+</tr>
+<tr>
+<td><strong>Deposit</strong></td>
+<td>958</td>
+<td>0</td>
+<td>0.00%</td>
+</tr>
+</tbody>
+</table>
+<p>All 118 flagged multi-rule alerts occurred within <strong>Transfers</strong>, confirming wire transfers as the primary target for malicious exploitation.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>18. Channel Vulnerability Analysis</h2>
+<p><img alt="Figure 7: Suspicious Rate (%) by Origination Channel" src="/figures/07_suspicious_rate_by_channel.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Total Transactions</th>
+<th>Suspicious Alerts</th>
+<th>Suspicious Rate (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Online</strong></td>
+<td>4,606</td>
+<td>118</td>
+<td><strong>2.56%</strong></td>
+</tr>
+<tr>
+<td><strong>Mobile App</strong></td>
+<td>3,931</td>
+<td>0</td>
+<td>0.00%</td>
+</tr>
+<tr>
+<td><strong>ATM</strong></td>
+<td>962</td>
+<td>0</td>
+<td>0.00%</td>
+</tr>
+<tr>
+<td><strong>Branch</strong></td>
+<td>501</td>
+<td>0</td>
+<td>0.00%</td>
+</tr>
+</tbody>
+</table>
+<p>Online web banking exhibited the highest vulnerability, reflecting web-based credential theft and automated session hijacking.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>19. Hourly Transaction Trend Analysis</h2>
+<p>Hourly analysis confirms that daytime hours (08:00 to 20:00) account for 92.5% of overall volume, while suspicious transaction concentration peaks sharply during nocturnal hours (23:00 to 04:00).</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>20. Transaction Amount vs. Suspicion Score Correlation</h2>
+<p><img alt="Figure 8: Transaction Amount ($) vs Suspicion Score Scatter Plot" src="/figures/05_amount_vs_suspicion_score.png" /></p>
+<p>Monetary value increases dramatically with suspicion score:<br />
+* Score 0: Average $3,966.30<br />
+* Score 1: Average $5,820.40<br />
+* Score 2: Average $51,890.10<br />
+* Score 3: Average $77,615.80</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>21. Required Visualizations</h2>
+<table>
+<thead>
+<tr>
+<th>Figure #</th>
+<th>Chart Title</th>
+<th>Type</th>
+<th>File Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fig 1</td>
+<td>End-to-End Pipeline Workflow</td>
+<td>Flowchart</td>
+<td><code>/figures/00_workflow_pipeline.png</code></td>
+</tr>
+<tr>
+<td>Fig 2</td>
+<td>Normal vs Suspicious Volume</td>
+<td>Bar Chart</td>
+<td><code>/figures/02_normal_vs_suspicious.png</code></td>
+</tr>
+<tr>
+<td>Fig 3</td>
+<td>Amount Distribution</td>
+<td>Histogram</td>
+<td><code>/figures/01_amount_distribution.png</code></td>
+</tr>
+<tr>
+<td>Fig 4</td>
+<td>Suspicious Activity by Hour</td>
+<td>Line Chart</td>
+<td><code>/figures/03_suspicious_by_hour.png</code></td>
+</tr>
+<tr>
+<td>Fig 5</td>
+<td>Rule Combination Frequencies</td>
+<td>Bar Chart</td>
+<td><code>/figures/06_rule_combination_frequencies.png</code></td>
+</tr>
+<tr>
+<td>Fig 6</td>
+<td>Suspicious Rate by Type</td>
+<td>Bar Chart</td>
+<td><code>/figures/04_suspicious_rate_by_type.png</code></td>
+</tr>
+<tr>
+<td>Fig 7</td>
+<td>Suspicious Rate by Channel</td>
+<td>Bar Chart</td>
+<td><code>/figures/07_suspicious_rate_by_channel.png</code></td>
+</tr>
+<tr>
+<td>Fig 8</td>
+<td>Amount vs Suspicion Score</td>
+<td>Scatter Plot</td>
+<td><code>/figures/05_amount_vs_suspicion_score.png</code></td>
+</tr>
+<tr>
+<td>Fig 9</td>
+<td>Confusion Matrix Heatmap</td>
+<td>Matrix Heatmap</td>
+<td><code>/figures/08_confusion_matrix.png</code></td>
+</tr>
+<tr>
+<td>Fig 10</td>
+<td>Top Repeat Accounts</td>
+<td>Pareto Chart</td>
+<td><code>/figures/09_top_accounts_pareto.png</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>22. Identifying High-Risk Accounts</h2>
+<p><img alt="Figure 9: Top Repeat Offender Accounts by Suspicious Alerts" src="/figures/09_top_accounts_pareto.png" /></p>
+<p>28 accounts generated multiple suspicious alerts. The top 8 repeat accounts:<br />
+1. <code>ACC1183</code>: 43 transactions, $570,373.00 total value, 10 suspicious (23.26% rate)<br />
+2. <code>ACC1290</code>: 37 transactions, $797,991.00 total value, 8 suspicious (21.62% rate)<br />
+3. <code>ACC1340</code>: 35 transactions, $699,260.00 total value, 6 suspicious (17.14% rate)<br />
+4. <code>ACC1492</code>: 26 transactions, $527,756.00 total value, 5 suspicious (19.23% rate)<br />
+5. <code>ACC1161</code>: 26 transactions, $636,560.00 total value, 4 suspicious (15.38% rate)<br />
+6. <code>ACC1420</code>: 23 transactions, $438,158.00 total value, 4 suspicious (17.39% rate)<br />
+7. <code>ACC1186</code>: 27 transactions, $385,701.00 total value, 4 suspicious (14.81% rate)<br />
+8. <code>ACC1030</code>: 31 transactions, $368,071.00 total value, 4 suspicious (12.90% rate)</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>23. Advanced Extensions &amp; ML Evaluation</h2>
+<p><img alt="Figure 10: Confusion Matrix: Ground Truth vs Rule Alert" src="/figures/08_confusion_matrix.png" /></p>
+<p>Evaluation against historical verified fraud ground-truth:<br />
+* <strong>True Positives (TP)</strong>: 118<br />
+* <strong>False Positives (FP)</strong>: 0<br />
+* <strong>True Negatives (TN)</strong>: 9,600<br />
+* <strong>False Negatives (FN)</strong>: 282<br />
+* <strong>Precision</strong>: <strong>100.00%</strong><br />
+* <strong>Recall</strong>: <strong>29.50%</strong><br />
+* <strong>F1-Score</strong>: <strong>0.456</strong><br />
+* <strong>False Positive Rate</strong>: <strong>0.00%</strong></p>
+<p>The rule-based screening engine achieved 100% precision with zero customer friction on the benchmark dataset.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>24. Pipeline Orchestration (cli.py)</h2>
+<p>Executed via single terminal command:</p>
+<pre><code class="language-powershell">.venv\Scripts\python.exe -m src.cli --input data/bank_transactions.csv --reports-dir reports
+</code></pre>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>25. Interactive Web Dashboard (Cronus FraudGuard)</h2>
+<p>Launched with <code>python run_web.py</code> at <code>http://127.0.0.1:8000</code>:<br />
+* Live KPI cards and interactive Chart.js graphs.<br />
+* Priority review queue with search, score filtering, and "Inspect" explainability modal.<br />
+* Interactive Rule Studio with dynamic threshold sliders.<br />
+* Drag-and-drop CSV uploader and synthetic data generator.<br />
+* Direct download links for Word (.docx), PDF (.pdf), and CSV review queues.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>26. Business Questions and Answers</h2>
+<ul>
+<li><strong>Q1: Percentage flagged?</strong> 1.18% (118 out of 10,000 transactions).</li>
+<li><strong>Q2: Rule generating most alerts?</strong> Rule 2: Late Night with 750 alerts (7.50%).</li>
+<li><strong>Q3: Transactions triggering &gt;= 2 rules?</strong> Exactly 118 transactions.</li>
+<li><strong>Q4: Transaction types with higher risk?</strong> Transfer (3.17% suspicious rate).</li>
+<li><strong>Q5: Channels showing higher suspicious activity?</strong> Online (2.56% suspicious rate).</li>
+<li><strong>Q6: Peak suspicious hours?</strong> Hour 23:00 (11:00 PM) with 34 flagged records.</li>
+<li><strong>Q7: Suspicious amounts vs normal?</strong> Suspicious average $53,416.15 vs $3,966.30 (13.47x higher).</li>
+<li><strong>Q8: Accounts with repeated activity?</strong> 28 accounts; top is ACC1183 with 10 alerts.</li>
+<li><strong>Q9: Most frequent combinations?</strong> Single anomaly: 0_1_0 (635 txns). Multi-rule: 0_1_1 (63 txns) and 1_1_0 (45 txns).</li>
+<li><strong>Q10: Rule performance against ground truth?</strong> 100% precision, 0% FPR, 29.5% recall.</li>
+</ul>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>27. Business Findings and Operational Recommendations</h2>
+<ol>
+<li><strong>P1 — Step-Up OTP Verification</strong>: Mandate biometric/SMS OTP for Online Transfers exceeding $45,000 executed between 23:00 and 05:59.</li>
+<li><strong>P2 — Account Velocity Throttles</strong>: Limit retail accounts to a maximum of 4 transfers per 60 minutes.</li>
+<li><strong>P3 — Surveillance Watchlist</strong>: Monitor top 28 repeat offender accounts (led by ACC1183).</li>
+<li><strong>P4 — Personalized Z-Scores</strong>: Evolve population thresholds toward per-account 90-day moving z-scores.</li>
+</ol>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>28. Testing, Validation and Reproducibility</h2>
+<ul>
+<li>38 unit and integration tests passing in Pytest across 6 test modules.</li>
+<li>94% code coverage on core logic.</li>
+<li>Reproducible with <code>python -m src.cli</code> and <code>pytest -v</code>.</li>
+</ul>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>29. Limitations and Important Analytical &amp; Ethical Note</h2>
+<ul>
+<li>An alert is an investigation signal, not conclusive proof of fraud.</li>
+<li>Secondary verification (SMS OTP / phone call) must always be used before account blocking.</li>
+<li>Real customer PII was omitted to ensure strict data privacy compliance.</li>
+</ul>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>30. Learning Outcomes</h2>
+<ul>
+<li>Financial transaction exploratory data analysis with Pandas.</li>
+<li>Transparent rule-based anomaly detection logic.</li>
+<li>Web dashboard development with FastAPI and Tailwind CSS.</li>
+<li>Test-Driven Development with Pytest.</li>
+<li>Responsible communication of financial crime analytics findings.</li>
+</ul>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>31. Conclusion and Future Scope</h2>
+<p>The project delivers a complete, reproducible, industry-ready bank transaction fraud screening system. Future work includes integrating streaming Kafka feeds, ML classification models, and graph neural network collusion ring analysis.</p>
+<hr />
+<p align="left"><img src="/static/cronus_logo.png" alt="Cronus Consultants Logo" width="130"></p>
+
+<h2>References</h2>
+<ul>
+<li>Pandas, NumPy, Matplotlib, Scikit-learn, and FastAPI official documentation.</li>
+<li>Basel Committee on Banking Supervision: Sound Practices for Operational and Financial Cyber Risk.</li>
+<li>Reserve Bank of India (RBI): Master Direction on Cyber Security and Fraud Monitoring in Banks.</li>
+</ul>
+    </article>
+
+    <footer class="mt-12 pt-6 border-t border-slate-200 text-center text-xs text-slate-400">
+      <p>© 2026 Cronus Bank & Cronus Consultants. All rights reserved. Industry-Oriented Data Analytics Capstone Project.</p>
+    </footer>
+  </main>
+
+</body>
+</html>

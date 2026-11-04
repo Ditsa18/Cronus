@@ -9,7 +9,7 @@ import io
 from typing import Dict, Any, Optional, List
 import pandas as pd
 from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, Response, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -109,6 +109,11 @@ app.add_middleware(
 STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+# Mount figures directory for rich reports & documentation
+FIGURES_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "reports", "figures"))
+if os.path.exists(FIGURES_DIR):
+    app.mount("/figures", StaticFiles(directory=FIGURES_DIR), name="figures")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -335,4 +340,70 @@ def export_suspicious_csv():
         content=stream.getvalue(),
         media_type="text/csv",
         headers={"Content-Disposition": "attachment; filename=suspicious_transactions.csv"}
+    )
+
+
+@app.get("/documentation", response_class=HTMLResponse)
+def serve_documentation():
+    """Serve the comprehensive 31-section project documentation page."""
+    doc_file = os.path.join(STATIC_DIR, "documentation.html")
+    if os.path.exists(doc_file):
+        with open(doc_file, "r", encoding="utf-8") as f:
+            return f.read()
+    reports_doc = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "reports", "PROJECT_DOCUMENTATION.html"))
+    if os.path.exists(reports_doc):
+        with open(reports_doc, "r", encoding="utf-8") as f:
+            return f.read()
+    raise HTTPException(status_code=404, detail="Project documentation not yet generated.")
+
+
+@app.get("/download/documentation/docx")
+def download_documentation_docx():
+    """Download the formal Word (.docx) documentation with logo on every page."""
+    docx_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "reports", "PROJECT_DOCUMENTATION.docx"))
+    if not os.path.exists(docx_path):
+        raise HTTPException(status_code=404, detail="Word documentation not found.")
+    return FileResponse(
+        docx_path,
+        filename="Cronus_Bank_Fraud_Detection_Project_Documentation.docx",
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
+
+
+@app.get("/download/documentation/pdf")
+def download_documentation_pdf():
+    """Download the formal PDF (.pdf) documentation with logo on every page."""
+    pdf_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "reports", "PROJECT_DOCUMENTATION.pdf"))
+    if not os.path.exists(pdf_path):
+        raise HTTPException(status_code=404, detail="PDF documentation not found.")
+    return FileResponse(
+        pdf_path,
+        filename="Cronus_Bank_Fraud_Detection_Project_Documentation.pdf",
+        media_type="application/pdf"
+    )
+
+
+@app.get("/download/documentation/html")
+def download_documentation_html():
+    """Download the HTML (.html) documentation."""
+    html_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "reports", "PROJECT_DOCUMENTATION.html"))
+    if not os.path.exists(html_path):
+        raise HTTPException(status_code=404, detail="HTML documentation not found.")
+    return FileResponse(
+        html_path,
+        filename="Cronus_Bank_Fraud_Detection_Project_Documentation.html",
+        media_type="text/html"
+    )
+
+
+@app.get("/download/documentation/markdown")
+def download_documentation_markdown():
+    """Download the raw Markdown (.md) documentation."""
+    md_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "docs", "PROJECT_DOCUMENTATION.md"))
+    if not os.path.exists(md_path):
+        raise HTTPException(status_code=404, detail="Markdown documentation not found.")
+    return FileResponse(
+        md_path,
+        filename="Cronus_Bank_Fraud_Detection_Project_Documentation.md",
+        media_type="text/markdown"
     )
