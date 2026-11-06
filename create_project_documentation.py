@@ -32,7 +32,7 @@ from reportlab.pdfgen import canvas
 
 LOGO_PATH = "assets/cronus_logo.png"
 if not os.path.exists(LOGO_PATH):
-    LOGO_PATH = "assets/logo.jpg"
+    LOGO_PATH = "assets/logo.png"
 
 
 def build_docx_documentation(output_path="reports/PROJECT_DOCUMENTATION.docx"):

@@ -1,5 +1,5 @@
 <p align="left">
-  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">
+  <img src="assets/logo.png" alt="Cronus Consultants Logo" width="180">
 </p>
 
 # Rule-Based Bank Transaction Fraud Detection & Suspicious Activity Analytics

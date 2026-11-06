@@ -3,7 +3,7 @@
 import os
 import glob
 
-LOGO_TAG = '<p align="left">\n  <img src="assets/logo.jpg" alt="Cronus Consultants Logo" width="180">\n</p>\n\n'
+LOGO_TAG = '<p align="left">\n  <img src="assets/logo.png" alt="Cronus Consultants Logo" width="180">\n</p>\n\n'
 
 def update_all_docs():
     target_files = ["README.md", "reports/FRAUD_MONITORING_MANAGEMENT_REPORT.md"] + glob.glob("docs/*.md")
