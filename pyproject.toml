@@ -31,3 +31,6 @@ addopts = "-v --strict-markers"
 [tool.coverage.run]
 source = ["src"]
 omit = ["tests/*"]
+
+[tool.vercel]
+entrypoint = "src.web_app:app"
